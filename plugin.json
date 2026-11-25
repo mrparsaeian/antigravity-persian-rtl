@@ -1,8 +1,8 @@
 {
   "name": "persian-rtl",
   "displayName": "Persian RTL & BiDi Output Formatter",
-  "version": "1.1.0",
-  "description": "Prevents left-alignment and scrambled word order in mixed Persian/English Antigravity chat outputs, artifacts, and generative UI using strict Persian-first structuring and raw Unicode BiDi controls.",
+  "version": "1.2.0",
+  "description": "Prevents left-alignment and scrambled word order in mixed Persian/English Antigravity chat outputs, artifacts, and generative UI using strict Persian-first structuring (including after emojis/numbers) and raw Unicode BiDi controls.",
   "author": {
     "name": "mrparsaeian",
     "url": "https://github.com/mrparsaeian"
