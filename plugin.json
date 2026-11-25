@@ -1,0 +1,20 @@
+{
+  "name": "persian-rtl",
+  "displayName": "Persian RTL & BiDi Output Formatter",
+  "version": "1.0.0",
+  "description": "Enforces clean right-to-left (RTL) and bidirectional (BiDi) formatting for mixed Persian/English agent responses, artifacts, and generative UI so word order never scrambles.",
+  "author": {
+    "name": "mrparsaeian",
+    "url": "https://github.com/mrparsaeian"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrparsaeian/antigravity-persian-rtl.git"
+  },
+  "logo": "assets/logo.svg",
+  "suggestedPrompts": [
+    "یک توضیح فنی درباره معماری میکروسرویس و نحوه ارتباط APIها به صورت کاملاً راست‌چین بنویس",
+    "این متن ترکیبی فارسی و انگلیسی را با دستورالعمل‌های BiDi اصلاح و راست‌چین کن",
+    "یک جدول مقایسه بین پروتکل‌های ارتباطی در ESP32 به زبان فارسی و راست‌چین بساز"
+  ]
+}

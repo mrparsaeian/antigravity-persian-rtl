@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+  </defs>
+  <rect x="12" y="12" width="104" height="104" rx="24" fill="url(#bgGrad)" />
+  <!-- RTL Paragraph lines aligned right -->
+  <rect x="44" y="34" width="52" height="8" rx="4" fill="#ffffff" />
+  <rect x="32" y="50" width="64" height="8" rx="4" fill="#e0f2fe" />
+  <rect x="52" y="66" width="44" height="8" rx="4" fill="#ffffff" />
+  <!-- RTL Direction Arrow pointing left -->
+  <path d="M96 90 H40 M40 90 L52 80 M40 90 L52 100" stroke="#38bdf8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+</svg>
