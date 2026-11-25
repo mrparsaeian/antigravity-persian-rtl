@@ -1,29 +1,32 @@
 # Persian / RTL & Bidirectional (BiDi) Output Formatting Rules
 
-Whenever the user communicates in Persian (Farsi) or another RTL language, or asks for Persian output, you MUST strictly follow these bidirectional (BiDi) formatting rules to prevent mixed Persian and English sentences from scrambling word order, punctuation, or alignment.
+Whenever the user communicates in Persian (Farsi) or another RTL language, or asks for Persian output, you MUST strictly follow these rules.
 
-## 1. HTML Container Wrapping (`<div dir="rtl">`)
-- Wrap all Persian prose paragraphs, lists, headings, and blockquotes in a top-level `<div dir="rtl" align="right">` ... `</div>` block (or wrap each Persian section in `<div dir="rtl">`) when outputting mixed Persian and English terms.
-- Leave fenced code blocks (` ```...``` `) OUTSIDE `<div dir="rtl">` blocks, or wrap them in `<div dir="ltr" align="left">` so code remains strictly Left-to-Right (LTR).
+> Why these rules matter: Antigravity's chat Markdown renderer sanitizes/ignores raw HTML tags such as `<div dir="rtl">` and `<bdi>`, and uses Unicode `dir="auto"` (first-strong-character detection) per paragraph, heading, and list item. Therefore, **any paragraph, heading, or list item whose first strong character is an English letter (even inside backticks, bold, or a link) will flip to Left-to-Right (LTR) and scramble the entire sentence.**
 
-## 2. Isolating Inline English & Technical Terms (BiDi Isolation)
-- **Wrap every inline English technical identifier, command, file path, flag, version number, or code token in backticks** (`` `...` ``), for example: `` `ESP32` ``, `` `platformio.ini` ``, `` `v2.35.1` ``, `` `run_command` ``.
-- When an inline English phrase contains multiple words, punctuation, colons, slashes, or parentheses outside backticks (e.g., product names, error summaries, or English expressions inside a Persian sentence), isolate it with `<bdi dir="ltr">...</bdi>` or wrap it in backticks, followed by the Right-to-Left Mark (`&rlm;` or Unicode U+200F) before continuing the Persian sentence.
-- **Avoid adjacent unisolated LTR segments**: Never place two separate English words or numbers separated only by spaces or neutral punctuation (like `-`, `:`, `/`, `|`, `,`) in the middle of a Persian sentence without either connecting them with Persian words or wrapping the entire English span in backticks / `<bdi dir="ltr">`. Otherwise, the Unicode BiDi algorithm merges them into a single LTR run and flips the order of surrounding terms.
+## 1. Never Start Any Line or Block with an English Character (CRITICAL)
+- **Every Persian paragraph, heading, blockquote, table cell, and list item MUST begin with a Persian word** (strong RTL character).
+- **NEVER** start a line, sentence-paragraph, heading, or bullet item with:
+  - An English word or brand name (e.g., ❌ `Antigravity نصب شده است.` → ✅ `برنامه ` + `` `Antigravity` `` + ` نصب شده است.`)
+  - A backtick code token (e.g., ❌ `` `plugin.json` فایل تنظیمات است. `` → ✅ `فایل ` + `` `plugin.json` `` + ` برای تنظیمات است.`)
+  - A bold English term (e.g., ❌ `**ESP32** یک برد است.` → ✅ `برد ` + `` `ESP32` `` + ` یک میکروکنترلر است.`)
+  - A Markdown link with English label on its own line (e.g., ❌ `[plugin.json](file:///...)` → ✅ `فایل مانیفست: [plugin.json](file:///...)`)
+  - A bare URL on its own line (e.g., ❌ `https://github.com/...` → ✅ `آدرس مخزن: https://github.com/...`)
+- **Mandatory Unicode RLM fallback:** If a line or sentence inside a Persian response MUST literally start with an English word, letter, symbol, or URL (for example, when quoting an exact English phrase or explicitly requested by the user), you MUST place the **actual raw Unicode Right-to-Left Mark character `‏` (`U+200F`)** — NOT the HTML entity `&rlm;` — as the very first character of that line/paragraph (and immediately after list markers like `- ` or `۱. `). Because `U+200F` is a strong RTL character in Unicode UAX #9, it forces `dir="auto"` renderers to keep the entire line right-aligned.
 
-## 3. Punctuation & Parentheses in Mixed Text
-- When placing an English term inside parentheses within a Persian sentence:
-  - Always put the English term in backticks inside the parentheses: `(` + `` `EnglishTerm` `` + `)`
-  - Example: `پروتکل ارتباطی (` + `` `MQTT` `` + `) در این پروژه فعال است.`
-- Never attach a Persian colon (`:`) or comma (`،`) directly to an unquoted English word at the end of a clause; either wrap the English word in backticks or place a Right-to-Left Mark (`‏` / `&rlm;`) immediately after the English word so the punctuation stays on the left side of the English word in RTL flow.
+## 2. Do NOT Rely on Raw HTML Tags in Chat Markdown
+- **Do NOT** wrap regular chat responses in `<div dir="rtl">...</div>` or use `<bdi dir="ltr">` or `&rlm;` in Markdown chat replies. Chat renderers strip or ignore raw HTML wrappers, leaving English-starting lines broken.
+- **Exception (HTML / Generative UI / standalone HTML artifacts):** When writing actual HTML files or Generative UI widgets, DO set `dir="rtl"` and `style="direction: rtl; text-align: right;"` on Persian containers, and `dir="ltr" style="unicode-bidi: isolate;"` on code/English spans.
 
-## 4. Lists and Numbered Items
-- Begin every bullet or numbered list item with a **Persian word** whenever possible.
-- If a list item must start with an English term or key:
-  - Prefix the item with a Right-to-Left Mark (`&rlm;`) or a short Persian label (e.g., `گزینه ` or `پارامتر `), and wrap the English term in backticks:
-  - Good: `- **پارامتر ` + `` `WaitMsBeforeAsync` `` + `:** زمان انتظار به میلی‌ثانیه.`
-  - Avoid starting an RTL line with raw unquoted English followed by a colon (`WaitMsBeforeAsync: زمان انتظار...`), which forces the browser/renderer to treat the paragraph as LTR or misplace the colon.
+## 3. Keep Inline English Terms Isolated and Never Adjacent
+- Wrap every inline English technical identifier, command, file path, flag, or version number in backticks (`` `...` ``), e.g., `` `ESP32` ``, `` `platformio.ini` ``, `` `v2.35.1` ``.
+- **Avoid adjacent English spans:** Never place two separate English terms back-to-back separated only by spaces or neutral punctuation (`-`, `:`, `/`, `|`, `,`, `()`). Always place a Persian connector word (`و`، `در`، `یا`، `از`، `برای`) between them, or combine a single technical expression into one backtick span.
+  - ❌ `در Antigravity 2.0 - Snap Package نسخه 2.35.1 نصب است.`
+  - ✅ `در اپلیکیشن دسکتاپ ` + `` `Antigravity 2.0` `` + ` (بسته ` + `` `Snap` `` + `) نسخه ` + `` `2.35.1` `` + ` نصب است.`
+- **Parentheses with English terms:** Put the English term inside backticks inside parentheses, e.g., `رابط کاربری (` + `` `UI` `` + `)`.
+- **Punctuation after English terms:** Never let a colon (`:`), comma (`،`), or period (`.`) sit awkwardly after a bare English word at the start/end of a clause; either use a Persian word before the colon (`گزینه ` + `` `timeout` `` + `:` → better: `**پارامتر ` + `` `timeout` `` + ` (زمان انتظار):**`) or place raw `‏` (`U+200F`) immediately after the English span.
 
-## 5. Tables & Generative UI
-- In Markdown tables containing Persian explanations alongside English identifiers, keep English identifiers inside backticks (`` `...` ``) and use right-alignment markers (`---:`) for Persian columns.
-- In Generative UI / HTML widgets or artifacts containing Persian text, always set `dir="rtl"` and `style="direction: rtl; text-align: right; unicode-bidi: plaintext;"` on Persian text containers, and `dir="ltr"` with `unicode-bidi: isolate;` on code/technical spans.
+## 4. Headings, Lists, Numbers, and Code Blocks
+- Prefer Persian digits (`۱.`، `۲.`، `۳.`) in numbered lists and headings, always followed by a Persian word: `### ۱. بررسی تنظیمات فایل ` + `` `platformio.ini` ``.
+- Keep fenced code blocks (` ```...``` `) on their own lines so code remains strictly Left-to-Right (`LTR`).
+- In Markdown tables, ensure every Persian cell starts with a Persian word (or raw `‏` `U+200F` if the cell starts with an English identifier) and wrap English identifiers in backticks.
